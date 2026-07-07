@@ -3,99 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akın Cafe - Dijital Sipariş Sistemi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/modern/bootstrap.min.css" rel="stylesheet">
+    <title>Akın Cafe | Dijital Menü & Sipariş</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .cafe-header { background: linear-gradient(135deg, #e67e22, #d35400); color: white; padding: 40px 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .menu-card { border: none; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .menu-card:hover { transform: translateY(-5px); }
-        .btn-order { background-color: #e67e22; color: white; border: none; }
-        .btn-order:hover { background-color: #d35400; color: white; }
-        .cart-badge { position: fixed; bottom: 20px; right: 20px; z-index: 1000; padding: 15px 25px; border-radius: 50px; font-size: 18px; }
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #ff6b00;
+            --text-color: #ffffff;
+            --text-muted: #a0a0a0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            padding-bottom: 100px;
+        }
+
+        /* Hero Üst Alan */
+        .hero-section {
+            background: linear-gradient(180deg, rgba(255, 107, 0, 0.2) 0%, rgba(18, 18, 18, 1) 100%);
+            padding: 50px 20px 30px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .hero-title span {
+            color: var(--accent-color);
+        }
+
+        /* Masa Seçim Kartı */
+        .config-card {
+            background-color: var(--card-bg);
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .form-select, .form-control {
+            background-color: #252525;
+            border: 1px solid #3a3a3a;
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        .form-select:focus, .form-control:focus {
+            background-color: #252525;
+            border-color: var(--accent-color);
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* Menü Kartları */
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .menu-card {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.15);
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .btn-add {
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 8px 20px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #e05e00;
+            color: #fff;
+        }
+
+        /* Alt Sabit Sepet Barı */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1a1a1a;
+            border-top: 1px solid #2a2a2a;
+            padding: 15px 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Modal Tasarımları */
+        .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid #333;
+            border-radius: 20px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .list-group-item {
+            background-color: transparent;
+            color: var(--text-color);
+            border-bottom: 1px solid #2a2a2a;
+            padding: 15px 0;
+        }
     </style>
 </head>
 <body>
 
-    <div class="cafe-header mb-4">
-        <h1 class="fw-bold">AKIN CAFE</h1>
-        <p class="lead mb-0">Masanızdan Hızlıca Sipariş Verin</p>
+    <div class="hero-section">
+        <h1 class="hero-title">AKIN <span>CAFE</span></h1>
+        <p class="text-muted">Dijital Sipariş & Temassız Menü Sistemi</p>
     </div>
 
-    <div class="container pb-5">
-        <div class="row mb-4">
+    <div class="container">
+        <div class="row mb-2">
             <div class="col-md-6 mx-auto">
-                <div class="card p-3 shadow-sm" style="border-radius: 12px;">
-                    <label for="tableNumber" class="form-label fw-bold text-secondary">Masa Numaranız:</label>
+                <div class="config-card">
+                    <label for="tableNumber" class="form-label fw-semibold text-muted mb-2">Bulunduğunuz Masa Numarası:</label>
                     <select id="tableNumber" class="form-select form-select-lg">
-                        <option value="">Lütfen seçiniz...</option>
+                        <option value="">Masa Seçiniz...</option>
                         <option value="Masa 1">Masa 1</option>
                         <option value="Masa 2">Masa 2</option>
                         <option value="Masa 3">Masa 3</option>
                         <option value="Masa 4">Masa 4</option>
                         <option value="Masa 5">Masa 5</option>
+                        <option value="Masa 6">Masa 6</option>
+                        <option value="Masa 7">Masa 7</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <h3 class="text-center mb-4 fw-bold text-dark">Menü</h3>
+        <h4 class="category-title">Sıcak İçecekler</h4>
         <div class="row g-3">
-            <div class="col-6 col-md-4">
-                <div class="card h-100 menu-card p-2 text-center">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Türk Kahvesi</h5>
-                        <p class="card-text text-muted">60 TL</p>
-                        <button class="btn btn-sm btn-order w-100 rounded-pill" onclick="addToCart('Türk Kahvesi', 60)">Ekle</button>
+            <div class="col-12 col-md-6">
+                <div class="card menu-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="product-name">Türk Kahvesi</div>
+                            <div class="product-price">60 TL</div>
+                        </div>
+                        <button class="btn btn-add" onclick="addToCart('Türk Kahvesi', 60)">Ekle</button>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4">
-                <div class="card h-100 menu-card p-2 text-center">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Çay</h5>
-                        <p class="card-text text-muted">25 TL</p>
-                        <button class="btn btn-sm btn-order w-100 rounded-pill" onclick="addToCart('Çay', 25)">Ekle</button>
+            <div class="col-12 col-md-6">
+                <div class="card menu-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="product-name">Filtre Kahve</div>
+                            <div class="product-price">75 TL</div>
+                        </div>
+                        <button class="btn btn-add" onclick="addToCart('Filtre Kahve', 75)">Ekle</button>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4">
-                <div class="card h-100 menu-card p-2 text-center">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Hamburger</h5>
-                        <p class="card-text text-muted">180 TL</p>
-                        <button class="btn btn-sm btn-order w-100 rounded-pill" onclick="addToCart('Hamburger', 180)">Ekle</button>
+        </div>
+
+        <h4 class="category-title">Yiyecekler</h4>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <div class="card menu-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="product-name">Özel Akın Burger</div>
+                            <div class="product-price">220 TL</div>
+                        </div>
+                        <button class="btn btn-add" onclick="addToCart('Özel Akın Burger', 220)">Ekle</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card menu-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="product-name">Patates Kızartması</div>
+                            <div class="product-price">90 TL</div>
+                        </div>
+                        <button class="btn btn-add" onclick="addToCart('Patates Kızartması', 90)">Ekle</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <button class="btn btn-warning shadow-lg cart-badge fw-bold" data-bs-toggle="modal" data-bs-target="#cartModal">
-        🛒 Sepetim (<span id="cartCount">0</span>)
-    </button>
+    <div class="cart-bar">
+        <div>
+            <span class="text-muted d-block" style="font-size: 0.85rem;">Toplam Tutar</span>
+            <span class="fw-bold fs-4 text-white"><span id="cartTotalOuter">0</span> TL</span>
+        </div>
+        <button class="btn btn-add px-4 py-2 shadow" data-bs-toggle="modal" data-bs-target="#cartModal">
+            Sepeti Gör (<span id="cartCount">0</span>)
+        </button>
+    </div>
 
     <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Siparişiniz</h5>
-                    <button type="button" class="btn-close" data-bs-shadow="none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title fw-bold">Sipariş Detayı</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="cartItems" class="list-group list-group-flush mb-3">
+                    <ul id="cartItems" class="list-group list-group-flush mb-4">
                         </ul>
                     
                     <div class="mb-3">
-                        <label for="orderNote" class="form-label fw-bold">Sipariş Notu (İsteğe Bağlı):</label>
-                        <textarea id="orderNote" class="form-control" rows="2" placeholder="Örn: Kahve orta şekerli olsun, ketçap az olsun..."></textarea>
+                        <label for="orderNote" class="form-label fw-semibold text-muted">Sipariş Notunuz:</label>
+                        <textarea id="orderNote" class="form-control" rows="3" placeholder="Örn: Kahve az şekerli olsun, soslar bol gelsin..."></textarea>
                     </div>
-                    
-                    <h5 class="text-end fw-bold text-danger">Toplam: <span id="cartTotal">0</span> TL</h5>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Kapat</button>
-                    <button type="button" class="btn btn-order px-4 rounded-pill fw-bold" onclick="sendOrder()">Siparişi Tamamla</button>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <span class="text-muted d-block" style="font-size: 0.8rem;">Genel Toplam</span>
+                        <span class="fw-bold fs-4 text-warning"><span id="cartTotalModal">0</span> TL</span>
+                    </div>
+                    <button type="button" class="btn btn-add px-4 py-2 fs-5" onclick="sendOrder()">Siparişi Gönder</button>
                 </div>
             </div>
         </div>
@@ -114,24 +285,29 @@
         function updateCartUI() {
             document.getElementById('cartCount').innerText = cart.length;
             const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
+            const totalOuter = document.getElementById('cartTotalOuter');
+            const totalModal = document.getElementById('cartTotalModal');
             
             cartItems.innerHTML = '';
             let total = 0;
 
             if(cart.length === 0) {
-                cartItems.innerHTML = '<li class="list-group-item text-muted text-center">Sepetiniz boş.</li>';
+                cartItems.innerHTML = '<li class="text-center text-muted py-4">Sepetiniz şu an boş.</li>';
             } else {
                 cart.forEach((item, index) => {
                     total += item.price;
                     cartItems.innerHTML += `
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            ${item.name} - ${item.price} TL
-                            <button class="btn btn-sm btn-danger rounded-pill" onclick="removeFromCart(${index})">Sil</button>
+                            <div>
+                                <span class="fw-medium">${item.name}</span>
+                                <span class="d-block text-muted" style="font-size:0.85rem;">${item.price} TL</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeFromCart(${index})">✕</button>
                         </li>`;
                 });
             }
-            cartTotal.innerText = total;
+            totalOuter.innerText = total;
+            totalModal.innerText = total;
         }
 
         function removeFromCart(index) {
@@ -144,39 +320,37 @@
             const note = document.getElementById('orderNote').value;
 
             if(!table) {
-                alert('Lütfen sipariş vermeden önce Masa Numaranızı seçin!');
+                alert('Lütfen siparişinizi tamamlamak için önce masa numaranızı seçin.');
                 return;
             }
             if(cart.length === 0) {
-                alert('Sepetinizde ürün bulunmamaktadır!');
+                alert('Sepetinizde ürün bulunmuyor.');
                 return;
             }
 
-            // Sipariş metnini hazırlayalım
-            let orderText = `*AKIN CAFE SİPARİŞİ*\n`;
-            orderText += `📍 *Konum:* ${table}\n`;
-            orderText += `📝 *Not:* ${note ? note : 'Yok'}\n\n`;
-            orderText += `🛒 *Ürünler:* \n`;
+            // WhatsApp Mesaj Taslağı
+            let orderText = `🔥 *AKIN CAFE - YENİ SİPARİŞ* 🔥\n\n`;
+            orderText += `📍 *Masa:* ${table}\n`;
+            orderText += `📝 *Sipariş Notu:* ${note ? note : 'Yok'}\n\n`;
+            orderText += `📦 *Ürünler:* \n`;
             
             cart.forEach(item => {
-                orderText += `- ${item.name} (${item.price} TL)\n`;
+                orderText += `• ${item.name} (${item.price} TL)\n`;
             });
             
-            orderText += `\n💰 *Toplam Tutar:* ${document.getElementById('cartTotal').innerText} TL`;
+            orderText += `\n💰 *Toplam Tutar:* ${document.getElementById('cartTotalModal').innerText} TL`;
 
-            // WhatsApp Entegrasyonu (Siparişi işletme telefonuna mesaj olarak atar)
-            // Lütfen aşağıdaki '905XXXXXXXXX' kısmına kendi telefon numaranızı yazın!
+            // DEĞİŞTİRİN: Aşağıdaki '905XXXXXXXXX' kısmına siparişleri alacağınız kendi telefon numaranızı yazın.
             const phoneNumber = "905XXXXXXXXX"; 
             const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(orderText)}`;
             
             window.open(whatsappUrl, '_blank');
             
-            // Sepeti sıfırla
+            // Temizlik ve Kapatma İşlemleri
             cart = [];
             document.getElementById('orderNote').value = '';
             updateCartUI();
             
-            // Modalı kapat
             const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
             modal.hide();
         }
